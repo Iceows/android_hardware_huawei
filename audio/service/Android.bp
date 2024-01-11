@@ -1,3 +1,14 @@
+//
+// Copyright (C) 2023 The LineageOS Project
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+package {
+    // See: http://go/android-license-faq
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
 cc_binary {
     name: "android.hardware.audio.service.hisi",
 
@@ -5,6 +16,7 @@ cc_binary {
     relative_install_path: "hw",
     vendor: true,
     compile_multilib: "64",
+
     srcs: ["service.cpp"],
 
     cflags: [
@@ -20,12 +32,5 @@ cc_binary {
         "liblog",
         "libutils",
         "libhardware",
-        "librttserver"
     ],
-}
-
-// Legacy service name, use android.hardware.audio.service instead
-phony {
-    name: "android.hardware.audio@2.0-service.hisi",
-    required: ["android.hardware.audio.service.hisi"],
 }

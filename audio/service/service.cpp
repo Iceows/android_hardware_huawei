@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-#define LOG_TAG "audiohalservice"
+#define LOG_TAG "audiohalservice.hisi"
 
+#include <signal.h>
 #include <string>
 #include <vector>
 
@@ -44,14 +45,16 @@ static bool registerPassthroughServiceImplementations(Iter first, Iter last) {
     return false;
 }
 
-int main(int /* argc */, char* /* argv */ []) {
+int main(int /* argc */, char* /* argv */[]) {
+    signal(SIGPIPE, SIG_IGN);
+
     ::android::ProcessState::initWithDriver("/dev/vndbinder");
     // start a threadpool for vndbinder interactions
     ::android::ProcessState::self()->startThreadPool();
 
     const int32_t defaultValue = -1;
     int32_t value =
-        property_get_int32("persist.vendor.audio.service.hwbinder.size_kbyte", defaultValue);
+            property_get_int32("persist.vendor.audio.service.hwbinder.size_kbyte", defaultValue);
     if (value != defaultValue) {
         ALOGD("Configuring hwbinder with mmap size %d KBytes", value);
         ProcessState::initWithMmapSize(static_cast<size_t>(value) * 1024);
@@ -63,6 +66,7 @@ int main(int /* argc */, char* /* argv */ []) {
     const std::vector<InterfacesList> mandatoryInterfaces = {
         {
             "Audio Core API",
+            "android.hardware.audio@7.1::IDevicesFactory",
             "android.hardware.audio@7.0::IDevicesFactory",
             "android.hardware.audio@6.0::IDevicesFactory",
             "android.hardware.audio@5.0::IDevicesFactory",
@@ -87,6 +91,7 @@ int main(int /* argc */, char* /* argv */ []) {
         },
         {
             "Bluetooth Audio API",
+            "android.hardware.bluetooth.audio@2.2::IBluetoothAudioProvidersFactory",
             "android.hardware.bluetooth.audio@2.1::IBluetoothAudioProvidersFactory",
             "android.hardware.bluetooth.audio@2.0::IBluetoothAudioProvidersFactory",
         },
