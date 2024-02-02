@@ -137,4 +137,3 @@ int LoadNveProperties() {
 void load_hisi_nve() {
     if (LoadNveProperties() < 0) LOG(WARNING) << "Unable to load nve properties";
 }
-

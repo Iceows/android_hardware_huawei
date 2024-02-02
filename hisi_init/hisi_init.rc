@@ -1,13 +1,5 @@
-
-on post-fs-data
-    wait /data/vendor/wifi
-    wait /data/vendor/bluedroid
-    start hisi_init
-    
-service hisi_init /vendor/bin/hw/hisi_init
+service vendor.hisi_init /vendor/bin/hisi_init
     class main
     user root
-    group bluetooth system wifi
+    group system
     oneshot
-    disabled
-

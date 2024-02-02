@@ -29,7 +29,7 @@ constexpr const char* kPropRilReady = "sys.rilprops_ready";
 
 // clang-format off
 constexpr const char* kDenylistedProperties[] = {
-    "ro.odm.config.modem_number"
+    "ro.telephony.default_network"
 };
 
 constexpr const char* kPhonePropPaths[] = {
@@ -90,7 +90,7 @@ static int LoadPhoneProperties() {
         for (const auto& path : kPhonePropPaths) {
             if ((ret = SetPhoneProperties(productId, path)) == 0) {
                 LOG(INFO) << "Successfully loaded phone properties ( " << path << ") for "
-                          << productId << " ret =" << ret ;
+                          << productId;
                 set_property(kPropRilReady, "1");
                 return ret;
             }

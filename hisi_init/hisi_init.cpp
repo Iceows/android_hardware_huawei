@@ -13,8 +13,8 @@
 #include <android-base/logging.h>
 
 int main() {
-    //LOG(INFO) << "Running hisi_connectivity";
-    //load_hisi_connectivity();
+    LOG(INFO) << "Running hisi_connectivity";
+    load_hisi_connectivity();
     LOG(INFO) << "Running hisi_dalvik";
     load_hisi_dalvik();
     LOG(INFO) << "Running hisi_nve";

@@ -27,11 +27,8 @@ typedef struct nv_item {
 } nv_item;
 #pragma pack(pop)
 
-#define MAC_LEN 12 // mac length without ':'
-#define MAC_ENTRY_MAX_LEN 28 // max length of mac entry inside nvme
-
 const std::pair<std::string, std::string> kNveMacMap[] = {
-        {"MACWLAN", "/data/vendor/wifi/macwifi"},
+        {"MACWLAN", "/data/vendor/wifi/macwlan"},
         {"MACBT", "/data/vendor/bluedroid/macbt"},
 };
 
