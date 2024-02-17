@@ -22,14 +22,17 @@ public class HwFmService extends IHwFmService.Stub {
     private IFmEventCallback mCallback = null;
 
     public HwFmService(Context context) {
+        Log.d(TAG, "HwFmService constructor context");
         this.mContext = context;
     }
 
     public HwFmService() {
+        Log.d(TAG, "HwFmService constructor");
     }
 
     @Override // com.huawei.android.hardware.fmradio.IHwFmService
     public int acquireFd(String path) {
+        Log.d(TAG, "acquireFd");
         this.mContext.enforceCallingOrSelfPermission(FM_PERMISSION, "need FM permission");
         int uid = Binder.getCallingUid();
         Log.d(TAG, "acquireFd uid = " + uid);

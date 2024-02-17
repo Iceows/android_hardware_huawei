@@ -7,7 +7,7 @@ import android.os.Parcel;
 import android.os.RemoteException;
 import com.huawei.android.hardware.fmradio.IFmEventCallback;
 
-/* loaded from: C:\Users\MOUNIERR\AppData\Local\Temp\jadx-15910938879466725409.dex */
+/* IHwFmService plutot manager */
 public interface IHwFmService extends IInterface {
     int acquireFd(String str) throws RemoteException;
 
@@ -55,7 +55,6 @@ public interface IHwFmService extends IInterface {
 
     void stopListner() throws RemoteException;
 
-    /* loaded from: C:\Users\MOUNIERR\AppData\Local\Temp\jadx-15910938879466725409.dex */
     public static abstract class Stub extends Binder implements IHwFmService {
         private static final String DESCRIPTOR = "com.huawei.android.hardware.fmradio.IHwFmService";
         static final int TRANSACTION_acquireFd = 1;

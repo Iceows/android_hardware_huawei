@@ -3,23 +3,34 @@ package com.huawei.android.hardware.fmradio;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.util.Log;
 import com.huawei.android.hardware.fmradio.IHwFmService;
 
 class FmReceiverWrapper {
     static final int FM_JNI_FAILURE = -1;
     static final int FM_JNI_SUCCESS = 0;
+    private static final String TAG = "FmReceiverWrapper";
     private static IHwFmService sService;
 
     FmReceiverWrapper() {
     }
 
+    
     private static IHwFmService getService() {
+        Log.d(FmReceiverWrapper.TAG, "getService");
         if (sService != null) {
             return sService;
         }
-        IBinder b = ServiceManager.getService("hwfm_service");
-        sService = IHwFmService.Stub.asInterface(b);
-        return sService;
+        
+	IBinder service = ServiceManager.getService("hwfm_service");
+	if (service != null) {
+            sService = IHwFmService.Stub.asInterface(service);
+            return sService;
+	}
+	else {
+            System.out.println("service hwfm_service not found");
+	}
+	return null;
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
@@ -87,6 +98,7 @@ class FmReceiverWrapper {
     /* JADX INFO: Access modifiers changed from: package-private */
     public static int setControlNative(int fd, int id, int value) {
         try {
+            Log.d(FmReceiverWrapper.TAG, "setControlNative");
             return getService().setControl(fd, id, value);
         } catch (RemoteException e) {
             return -1;
