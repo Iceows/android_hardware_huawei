@@ -1,6 +1,6 @@
 /*
 * aidl file :
-* com/huawei/android/hardware/fmradio/IHwFmService.aidl
+* com/huawei/android/hardware/fmradio/IFmEventCallback.aidl
 * This file contains definitions of functions which are
 * exposed by service.
 *
@@ -9,7 +9,6 @@
 
 
 package com.huawei.android.hardware.fmradio;
-import com.huawei.android.hardware.fmradio.IFmEventCallback;
 
 
 /**{@hide}*/
