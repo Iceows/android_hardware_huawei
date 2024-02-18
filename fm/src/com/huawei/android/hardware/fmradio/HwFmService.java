@@ -1,11 +1,32 @@
-package com.huawei.android.hardware.fmradio;
+//
+// Copyright (C) 2024 The LineageOS Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// Author : Raphael Mounier (Iceows)
+//
+
+package com.huawei.android.hardware.fmradio; 
 
 import android.content.Context;
 import android.media.AudioSystem;
+
 import android.os.Binder;
 import android.os.RemoteException;
 import android.util.Log;
-import com.huawei.android.hardware.fmradio.IHwFmService;
+import android.os.IFmEventCallback;  
+import android.os.IHwFmService;  
+
 import java.util.Arrays;
 
 
@@ -188,15 +209,15 @@ public class HwFmService extends IHwFmService.Stub {
 	}*/
     
         if (state == 0 && this.mIsFmConnected) {
-            //AudioSystem.setDeviceConnectionState(DEVICE_OUT_FM, 0, "");
+            AudioSystem.setDeviceConnectionState(DEVICE_OUT_FM, 0, "");
             this.mIsFmConnected = false;
         } else if (state == 1 && (!this.mIsFmConnected)) {
-            //AudioSystem.setDeviceConnectionState(DEVICE_OUT_FM, 1, "");
+            AudioSystem.setDeviceConnectionState(DEVICE_OUT_FM, 1, "");
             this.mIsFmConnected = true;
         }
     }
 
-    @Override // com.huawei.android.hardware.fmradio.IHwFmService
+    @Override // com.android.server.IHwFmService
     public void startListner(final int fd, IFmEventCallback cb) {
         this.mContext.enforceCallingOrSelfPermission(FM_PERMISSION, "need FM permission");
         this.mCallback = cb;
