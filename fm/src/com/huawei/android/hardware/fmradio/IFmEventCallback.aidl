@@ -12,6 +12,6 @@ package com.huawei.android.hardware.fmradio;
 
 
 /**{@hide}*/
-interface IFmEventCallback {
+oneway interface IFmEventCallback {
     void onEventCallback(int i, int i2, int i3);
 }

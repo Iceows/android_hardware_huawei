@@ -16,7 +16,8 @@
 // Author : Raphael Mounier (Iceows)
 //
 
-package com.huawei.android.hardware.fmradio; 
+package com.huawei.android.hardware.fmradio;
+
 
 import android.content.Context;
 import android.media.AudioSystem;
@@ -24,16 +25,26 @@ import android.media.AudioSystem;
 import android.os.Binder;
 import android.os.RemoteException;
 import android.util.Log;
-import android.os.IFmEventCallback;  
-import android.os.IHwFmService;  
+import android.os.IFmEventCallback;
+import android.os.IHwFmService;
 
 import java.util.Arrays;
+import java.lang.reflect.Method;
 
 
 public class HwFmService extends IHwFmService.Stub {
     private static final int EVENT_LISTEN = 1;
-    private static final String FM_PERMISSION = "com.huawei.permission.ACCESS_FM";
-    private static final int DEVICE_OUT_FM = 1048576;
+    //private static final String FM_PERMISSION = "com.huawei.permission.ACCESS_FM";
+    private static final String FM_PERMISSION = "android.permission.MODIFY_AUDIO_SETTINGS";
+    // Constants copied from AudioSystem
+    private static final int AUDIO_DEVICE_OUT_FM               = 0x100000;
+    private static final int AUDIO_DEVICE_OUT_EARPIECE         = 0x1;
+    private static final int AUDIO_DEVICE_OUT_SPEAKER          = 0x2;
+    private static final int AUDIO_DEVICE_OUT_WIRED_HEADSET    = 0x4;
+    private static final int AUDIO_DEVICE_OUT_WIRED_HEADPHONE  = 0x8;
+
+    private static final int DEVICE_STATE_UNAVAILABLE   = 0;
+    private static final int DEVICE_STATE_AVAILABLE     = 1;
     private static final int STD_BUF_SIZE = 128;
     private static final String TAG = "HwFmService";
     private Context mContext;
@@ -50,6 +61,29 @@ public class HwFmService extends IHwFmService.Stub {
     public HwFmService() {
         Log.d(TAG, "HwFmService constructor");
     }
+
+
+    /* force route function through AudioSystem - use reflection */
+    private void setDeviceConnectionStateOld(final int device, final int state, final String address) {
+        try {
+            Class<?> audioSystem = Class.forName("android.media.AudioSystem");
+            Method setDeviceConnectionState = audioSystem.getMethod(
+                    "setDeviceConnectionState", int.class, int.class, String.class);
+
+            setDeviceConnectionState.invoke(audioSystem, device, state, address);
+        } catch (Exception e) {
+            Log.e(TAG, "setDeviceConnectionState failed: " + e);
+        }
+    }
+
+	/*
+	static bool checkPermission() {
+		if (getpid() == IPCThreadState::self()->getCallingPid()) return true;
+		bool ok = checkCallingPermission(String16("android.permission.MODIFY_AUDIO_SETTINGS"));
+		if (!ok) LOGE("Request requires android.permission.MODIFY_AUDIO_SETTINGS");
+		return ok;
+	}
+	*/
 
     @Override // com.huawei.android.hardware.fmradio.IHwFmService
     public int acquireFd(String path) {
@@ -195,24 +229,12 @@ public class HwFmService extends IHwFmService.Stub {
     @Override // com.huawei.android.hardware.fmradio.IHwFmService
     public void setFmDeviceConnectionState(int state) {
         this.mContext.enforceCallingOrSelfPermission(FM_PERMISSION, "need FM permission");
-        /*        
-	if (!checkPermission()) {
-		return PERMISSION_DENIED;
-	}*/
-	/*
-	if (!AudioSystem::isOutputDevice(device) && !AudioSystem::isInputDevice(device)) {
-		return BAD_VALUE;
-	}
-	if (state != AudioSystem::DEVICE_STATE_AVAILABLE &&
-	    state != AudioSystem::DEVICE_STATE_UNAVAILABLE) {
-		return BAD_VALUE;
-	}*/
-    
-        if (state == 0 && this.mIsFmConnected) {
-            AudioSystem.setDeviceConnectionState(DEVICE_OUT_FM, 0, "");
+
+        if (state == DEVICE_STATE_UNAVAILABLE && this.mIsFmConnected) {
+            setDeviceConnectionStateOld(AUDIO_DEVICE_OUT_FM, state, "");
             this.mIsFmConnected = false;
-        } else if (state == 1 && (!this.mIsFmConnected)) {
-            AudioSystem.setDeviceConnectionState(DEVICE_OUT_FM, 1, "");
+        } else if (state == DEVICE_STATE_AVAILABLE && (!this.mIsFmConnected)) {
+            setDeviceConnectionStateOld(AUDIO_DEVICE_OUT_FM, state, "");
             this.mIsFmConnected = true;
         }
     }
@@ -221,7 +243,7 @@ public class HwFmService extends IHwFmService.Stub {
     public void startListner(final int fd, IFmEventCallback cb) {
         this.mContext.enforceCallingOrSelfPermission(FM_PERMISSION, "need FM permission");
         this.mCallback = cb;
-        this.mThread = new Thread() { // from class: com.huawei.android.hardware.fmradio.HwFmService.1
+        this.mThread = new Thread() {
             @Override // java.lang.Thread, java.lang.Runnable
             public void run() {
                 byte[] buff = new byte[128];
