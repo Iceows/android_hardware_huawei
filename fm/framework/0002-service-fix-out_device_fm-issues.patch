@@ -1,7 +1,7 @@
 From 7d023b57c1ecb6ce9b97205259029f3b387ae6b0 Mon Sep 17 00:00:00 2001
 From: Raphael Mounier <mounierr07@gmail.com>
 Date: Sun, 18 Feb 2024 21:05:11 +0100
-Subject: [PATCH] service: fix out_device_fm issues
+Subject: [PATCH 2/3] service: fix out_device_fm issues
 
 Change-Id: I3d4330468d1917dc58e8de9acc96f65a7e00accd
 ---
