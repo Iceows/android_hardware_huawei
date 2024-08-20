@@ -23,6 +23,19 @@ cc_library_shared {
 }
 
 cc_library_shared {
+    name: "libimonitor",
+    proprietary: true,
+    defaults: ["hidl_defaults"],
+    srcs: [
+        "cjson.c",
+        "imonitor.c",
+    ],
+    shared_libs: [
+        "liblog",
+    ],
+}
+
+cc_library_shared {
     name: "libxcollie",
     proprietary: true,
     defaults: ["hidl_defaults"],
@@ -33,3 +46,4 @@ cc_library_shared {
         "liblog",
     ],
 }
+
