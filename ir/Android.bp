@@ -1,0 +1,36 @@
+//
+// Copyright (C) 2021 The Android Open Source Project
+//               2024 The LineageOS Project
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+cc_binary {
+    name: "android.hardware.ir-service.huawei",
+    relative_install_path: "hw",
+    init_rc: ["android.hardware.ir-service.huawei.rc"],
+    vendor: true,
+    vintf_fragments: ["android.hardware.ir-service.huawei.xml"],
+
+    shared_libs: [
+        "libbase",
+        "libbinder_ndk",
+        "libcutils",
+        "libhardware",
+        "libhidlbase",
+        "liblog",
+        "libutils",
+        "android.hardware.audio@4.0",
+        "android.hardware.audio@5.0",
+        "android.hardware.ir-V1-ndk",
+    ],
+
+    srcs: [
+        "audio.cpp",
+        "main.cpp",
+    ],
+}
